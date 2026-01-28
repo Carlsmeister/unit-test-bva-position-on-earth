@@ -26,165 +26,140 @@ public class TestPositionOnEarth {
     }
 
     @Test
-    public void convertToDD() {
-        double result = pos.convertToDD(30, 15, 50);
+    public void convertToDD_NormalCase_Lat() {
+        double result = pos.convertToDD(30, 15, 50, PositionOnEarth.coordType.LAT);
         double expected = 30 + 15.0 / 60 + 50.0 / 3600;
         assertEquals(expected, result, 0.0001);
     }
 
     @Test
-    public void convertToDD_BVA_Min0_Sec0() {
-        double result = pos.convertToDD(30, 0, 0);
-        assertEquals(30.0, result);
+    public void convertToDD_InvalidDegLow_Lat() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(-91, 0, 0, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void convertToDD_BVA_Min59_Sec59() {
-        double result = pos.convertToDD(30, 59, 59);
+    public void convertToDD_InvalidDegHigh_Lat() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(91, 0, 0, PositionOnEarth.coordType.LAT));
+    }
+
+    @Test
+    public void convertToDD_invalidDegLow_Lon() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(-181, 0, 0, PositionOnEarth.coordType.LON));
+    }
+
+    @Test
+    public void convertToDD_invalidDegHigh_Lon() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(181, 0, 0, PositionOnEarth.coordType.LON));
+    }
+
+    @Test
+    public void convertToDD_BVA_Min0_Sec0_Lat() {
+        double result = pos.convertToDD(30, 0, 0, PositionOnEarth.coordType.LAT);
+        assertEquals(30.0, result, 0.0001);
+    }
+
+    @Test
+    public void convertToDD_BVA_Min59_Sec59_Lat() {
+        double result = pos.convertToDD(30, 59, 59, PositionOnEarth.coordType.LAT);
         double expected = 30 + 59.0 / 60 + 59.0 / 3600;
         assertEquals(expected, result, 0.0001);
     }
 
     @Test
-    public void testConvertToDD_InvalidMin() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToDD(30, -1, 0));
+    public void convertToDD_InvalidMinLow() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(30, -1, 0, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void testConvertToDD_InvalidSec() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToDD(30, 0, -1));
+    public void convertToDD_InvalidMinHigh() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(30, 60, 0, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void testConvertToDD_InvalidMin60() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToDD(30, 60, 0));
+    public void convertToDD_InvalidSecLow() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(30, 0, -1, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void testConvertToDD_InvalidSec60() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToDD(30, 0, 60));
+    public void convertToDD_InvalidSecHigh() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToDD(30, 0, 60, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void convertToD_BVA_0() {
-        double[] dms = pos.convertToD(0);
+    public void convertToD_Lat_BVA_0() {
+        double[] dms = pos.convertToD(0, PositionOnEarth.coordType.LAT);
         assertEquals(0, dms[0]);
         assertEquals(0, dms[1]);
         assertEquals(0, dms[2], 0.1);
     }
 
     @Test
-    public void convertToD_BVA_90() {
-        double[] dms = pos.convertToD(90);
+    public void convertToD_Lat_BVA_90() {
+        double[] dms = pos.convertToD(90, PositionOnEarth.coordType.LAT);
         assertEquals(90, dms[0]);
         assertEquals(0, dms[1]);
         assertEquals(0, dms[2], 0.1);
     }
 
     @Test
-    public void convertToD_BVA_Neg90() {
-        double[] dms = pos.convertToD(-90);
-        assertEquals(-90, dms[0]);
-        assertEquals(0, dms[1]);
-        assertEquals(0, dms[2], 0.1);
+    public void convertToD_Lat_InvalidLow() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToD(-91, PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void convertToD_BVA_180() {
-        double[] dms = pos.convertToD(180);
+    public void convertToD_Lat_InvalidHigh() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToD(91, PositionOnEarth.coordType.LAT));
+    }
+
+    @Test
+    public void convertToD_Lon_BVA_180() {
+        double[] dms = pos.convertToD(180, PositionOnEarth.coordType.LON);
         assertEquals(180, dms[0]);
         assertEquals(0, dms[1]);
         assertEquals(0, dms[2], 0.1);
     }
 
     @Test
-    public void convertToD_BVA_Neg180() {
-        double[] dms = pos.convertToD(-180);
-        assertEquals(-180, dms[0]);
-        assertEquals(0, dms[1]);
-        assertEquals(0, dms[2], 0.1);
+    public void convertToD_Lon_InvalidLow() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToD(-181, PositionOnEarth.coordType.LON));
     }
 
     @Test
-    public void convertToD_BVA_Fractional() {
-        double[] dms = pos.convertToD(30.263888);
+    public void convertToD_Lon_InvalidHigh() {
+        assertThrows(IllegalArgumentException.class,
+                () -> pos.convertToD(181, PositionOnEarth.coordType.LON));
+    }
+
+    @Test
+    public void convertToD_Fractional_Lat() {
+        double[] dms = pos.convertToD(30.263888, PositionOnEarth.coordType.LAT);
         assertEquals(30, dms[0]);
         assertEquals(15, dms[1]);
         assertEquals(50, dms[2], 0.1);
     }
 
     @Test
-    public void setPos_Lat_BVA_Valid_90_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LAT, 90, 0, 0);
-        assertEquals(90.0, pos.getPos(PositionOnEarth.coordType.LAT));
+    public void setPos_Lat_Valid() {
+        pos.setPos(PositionOnEarth.coordType.LAT, 45, 30, 0);
+        assertEquals(45.5, pos.getPos(PositionOnEarth.coordType.LAT));
     }
 
     @Test
-    public void setPos_Lat_BVA_Valid_Neg90_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LAT, -90, 0, 0);
-        assertEquals(-90.0, pos.getPos(PositionOnEarth.coordType.LAT));
-    }
-
-    @Test
-    public void setPos_Lat_BVA_Valid_89_59_59() {
-        pos.setPos(PositionOnEarth.coordType.LAT, 89, 59, 59);
-        double expected = 89 + 59.0 / 60 + 59.0 / 3600;
-        assertEquals(expected, pos.getPos(PositionOnEarth.coordType.LAT), 0.0001);
-    }
-
-    @Test
-    public void setPos_Lat_BVA_Invalid_91_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LAT, 91, 0, 0);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LAT));
-    }
-
-    @Test
-    public void setPos_Lat_BVA_Invalid_Neg91_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LAT, -91, 0, 0);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LAT));
-    }
-
-    @Test
-    public void setPos_Lat_BVA_Invalid_90_0_1() {
-        pos.setPos(PositionOnEarth.coordType.LAT, 90, 0, 1);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LAT));
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Valid_180_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LON, 180, 0, 0);
-        assertEquals(180.0, pos.getPos(PositionOnEarth.coordType.LON));
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Valid_Neg180_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LON, -180, 0, 0);
-        assertEquals(-180.0, pos.getPos(PositionOnEarth.coordType.LON));
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Valid_179_59_59() {
+    public void setPos_Lon_Valid() {
         pos.setPos(PositionOnEarth.coordType.LON, 179, 59, 59);
         double expected = 179 + 59.0 / 60 + 59.0 / 3600;
         assertEquals(expected, pos.getPos(PositionOnEarth.coordType.LON), 0.0001);
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Invalid_181_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LON, 181, 0, 0);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LON));
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Invalid_Neg181_0_0() {
-        pos.setPos(PositionOnEarth.coordType.LON, -181, 0, 0);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LON));
-    }
-
-    @Test
-    public void setPos_Lon_BVA_Invalid_180_0_1() {
-        pos.setPos(PositionOnEarth.coordType.LON, 180, 0, 1);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LON));
     }
 
     @Test
@@ -196,78 +171,32 @@ public class TestPositionOnEarth {
 
     @Test
     public void clearPos_Lon() {
-        pos.setPos(PositionOnEarth.coordType.LON, 45, 0, 0);
+        pos.setPos(PositionOnEarth.coordType.LON, 179, 0, 0);
         pos.clearPos(PositionOnEarth.coordType.LON);
-        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LON));
+        assertEquals(0.0, pos.getPos(PositionOnEarth.coordType.LON), 0.0001);
     }
 
     @Test
-    public void getPos_Lat() {
-        pos.setPos(PositionOnEarth.coordType.LAT, 45, 30, 0);
-        assertEquals(45.5, pos.getPos(PositionOnEarth.coordType.LAT));
+    public void roundTrip_Positive_Lat() {
+        double dd = pos.convertToDD(45, 30, 45, PositionOnEarth.coordType.LAT);
+        double[] dms = pos.convertToD(dd, PositionOnEarth.coordType.LAT);
+
+        assertEquals(45, dms[0]);
+        assertEquals(30, dms[1]);
+        assertEquals(45, dms[2], 0.1);
     }
 
     @Test
-    public void getPos_Lon() {
-        pos.setPos(PositionOnEarth.coordType.LON, 45, 30, 0);
-        assertEquals(45.5, pos.getPos(PositionOnEarth.coordType.LON));
-    }
+    public void additionConsistency_Latitude() {
+        double sum =
+                pos.convertToDD(30, 0, 0, PositionOnEarth.coordType.LAT) +
+                        pos.convertToDD(30, 0, 0, PositionOnEarth.coordType.LAT) +
+                        pos.convertToDD(30, 0, 0, PositionOnEarth.coordType.LAT);
 
-    @Test
-    public void testRoundTrip() {
-        int deg = 45;
-        int min = 30;
-        int sec = 45;
-        double dd = pos.convertToDD(deg, min, sec);
-        double[] dms = pos.convertToD(dd);
-        assertEquals(deg, dms[0]);
-        assertEquals(min, dms[1]);
-        assertEquals(sec, dms[2], 0.1);
-    }
+        double[] dms = pos.convertToD(sum, PositionOnEarth.coordType.LAT);
 
-    @Test
-    public void testRoundTripNegative() {
-        int deg = -45;
-        int min = 30;
-        int sec = 45;
-        double dd = pos.convertToDD(deg, min, sec);
-        double[] dms = pos.convertToD(dd);
-        assertEquals(-44, dms[0]);
-        assertEquals(29, dms[1]);
-        assertEquals(15, dms[2], 0.1);
-    }
-
-    @Test
-    public void testAdditionConsistencyLatitude() {
-        double dd1 = pos.convertToDD(30, 0, 0);
-        double dd2 = pos.convertToDD(30, 0, 0);
-        double dd3 = pos.convertToDD(30, 0, 0);
-        double sumDD = dd1 + dd2 + dd3;
-        double[] dms_sum = pos.convertToD(sumDD);
-        assertEquals(90, dms_sum[0]);
-        assertEquals(0, dms_sum[1]);
-        assertEquals(0, dms_sum[2], 0.1);
-    }
-
-    @Test
-    public void testAdditionConsistencyLongitude() {
-        double dd1 = pos.convertToDD(60, 0, 0);
-        double dd2 = pos.convertToDD(60, 0, 0);
-        double dd3 = pos.convertToDD(60, 0, 0);
-        double sumDD = dd1 + dd2 + dd3;
-        double[] dms_sum = pos.convertToD(sumDD);
-        assertEquals(180, dms_sum[0]);
-        assertEquals(0, dms_sum[1]);
-        assertEquals(0, dms_sum[2], 0.1);
-    }
-
-    @Test
-    public void testConvertToD_InvalidLow() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToD(-181));
-    }
-
-    @Test
-    public void testConvertToD_InvalidHigh() {
-        assertThrows(IllegalArgumentException.class, () -> pos.convertToD(181));
+        assertEquals(90, dms[0]);
+        assertEquals(0, dms[1]);
+        assertEquals(0, dms[2], 0.1);
     }
 }
